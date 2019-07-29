@@ -20,7 +20,6 @@ router.post('/', async ( req, res ) => {
 router.post('/:id/comments', async ( req, res ) => {
   const { text } = req.body
   const { id } = req.params
-  console.log(id)
   try{
     const post = await Posts.findById(id)
     if(!post) {
@@ -33,7 +32,6 @@ router.post('/:id/comments', async ( req, res ) => {
     }
   }
   catch (error) {
-    console.log(error)
     res.status(500).json({ error: "There was an error while saving the comment to the database" })
   }
 })
@@ -50,10 +48,9 @@ router.get('/', async ( req, res ) => {
 
 router.get('/:id', async ( req, res) => {
   const { id } = req.params
-  console.log(id)
   try {
     const post = await Posts.findById(id)
-    if(!post) {
+    if(post.length === 0) {
       res.status(404).json({ message: "The post with the specified ID does not exist." })
     } else {
       res.status(200).json(post)
@@ -61,6 +58,21 @@ router.get('/:id', async ( req, res) => {
   }
   catch {
     res.status(500).json({ error: "The posts information could not be retrieved." })
+  }
+})
+
+router.get('/:id/comments', async ( req, res) => {
+  const { id } = req.params
+  try {
+    const comments = await Posts.findCommentById(id)
+    if(comments.length === 0) {
+      res.status(404).json({ message: "The post with the specified ID does not exist." })
+    } else {
+      res.status(200).json(comments)
+    }
+  }
+  catch (error) {
+    res.status(500).json({ error: "The comments information could not be retrieved." })
   }
 })
 
