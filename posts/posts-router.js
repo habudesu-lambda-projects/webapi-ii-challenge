@@ -36,5 +36,14 @@ router.post('/:id/comments', async ( req, res ) => {
   }
 })
 
+router.get('/', async ( req, res ) => {
+  try {
+    const posts = await Posts.find()
+    res.status(200).json(posts)
+  }
+  catch {
+    res.status(500).json({ error: "The posts information could not be retrieved." })
+  }
+})
 
-module.exports = router;
+module.exports = router
