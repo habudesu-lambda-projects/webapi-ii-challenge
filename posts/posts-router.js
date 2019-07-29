@@ -19,7 +19,8 @@ router.post('/', async ( req, res ) => {
 
 router.post('/:id/comments', async ( req, res ) => {
   const { text } = req.body
-  const { id } = req.params.id
+  const { id } = req.params
+  console.log(id)
   try{
     const post = await Posts.findById(id)
     if(!post) {
@@ -27,11 +28,12 @@ router.post('/:id/comments', async ( req, res ) => {
     } else if(!text) {
       res.status(400).json({ errorMessage: "Please provide text for the comment." })
     } else {
-      const comment = await Posts.insert(req.body)
+      const comment = await Posts.insertComment({ text: text, post_id: id})
       res.status(201).json(comment)
     }
   }
   catch (error) {
+    console.log(error)
     res.status(500).json({ error: "There was an error while saving the comment to the database" })
   }
 })
